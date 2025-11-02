@@ -1,0 +1,128 @@
+<div class="px-4 py-6 sm:px-0">
+  <div class="mb-6">
+    <a href="/" class="text-blue-600 hover:text-blue-800 text-sm">&larr; Back to Home</a>
+  </div>
+
+  <div class="max-w-2xl">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Record New Game</h1>
+    <div id="formMessage" class="mt-4 text-sm"></div>
+
+    {{#if players}}
+    <form id="recordGameForm" class="bg-white shadow rounded-lg p-6">
+      <div class="space-y-6">
+        <div>
+          <label for="white_player_slug" class="block text-sm font-medium text-gray-700">White Player *</label>
+          <select name="white_player_slug" id="white_player_slug" required
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Select player...</option>
+            {{#each players}}
+            <option value="{{slug}}">{{name}} ({{current_rating}})</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div>
+          <label for="black_player_slug" class="block text-sm font-medium text-gray-700">Black Player *</label>
+          <select name="black_player_slug" id="black_player_slug" required
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Select player...</option>
+            {{#each players}}
+            <option value="{{slug}}">{{name}} ({{current_rating}})</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Game Result *</label>
+          <div class="space-y-2">
+            <label class="flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50">
+              <input type="radio" name="result" value="white_win" required class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-3 text-sm font-medium text-gray-900">White Wins (1-0)</span>
+            </label>
+            <label class="flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50">
+              <input type="radio" name="result" value="black_win" required class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-3 text-sm font-medium text-gray-900">Black Wins (0-1)</span>
+            </label>
+            <label class="flex items-center p-3 border rounded-md cursor-pointer hover:bg-gray-50">
+              <input type="radio" name="result" value="draw" required class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-3 text-sm font-medium text-gray-900">Draw (½-½)</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
+          <textarea name="notes" id="notes" rows="3"
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Optional notes about the game..."></textarea>
+        </div>
+      </div>
+
+      <div class="mt-6 flex space-x-3">
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+          Record Game
+        </button>
+        <a href="/" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md text-sm font-medium">
+          Cancel
+        </a>
+      </div>
+    </form>
+    {{else}}
+    <div class="bg-white shadow rounded-lg p-12 text-center">
+      <div class="text-gray-400">
+        <svg class="mx-auto h-12 w-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No active players</h3>
+        <p class="mt-1 text-sm text-gray-500">You need at least 2 active players to record a game.</p>
+        <div class="mt-6">
+          <a href="/players/new" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            Add Players
+          </a>
+        </div>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('recordGameForm');
+  const messageDiv = document.getElementById('formMessage');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch('/games', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        const result = await res.json();
+        messageDiv.textContent = 'Game recorded successfully!';
+        messageDiv.classList.add('text-green-600');
+        window.location.href = '/';
+      } 
+      else {
+        const err = await res.json();
+        alert(`Error: ${err.message || 'Failed to record game'}`);
+      }
+    } 
+    catch (err) {
+      console.error('Request failed:', err);
+      messageDiv.textContent = 'An error occurred.';
+      messageDiv.classList.add('text-red-600');
+    }
+  });
+});
+</script>

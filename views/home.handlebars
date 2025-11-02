@@ -1,0 +1,314 @@
+<div class="px-4 py-6 sm:px-0">
+  <div class="text-center mb-12">
+    <h3 id="random-quote-display" class="text-lg italic font-medium text-gray-700"></h3>
+  </div>
+
+  {{#if settings.showTopPlayers}}
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <div class="bg-white shadow rounded-lg flex flex-col">
+      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Top 10 Players</h3>
+      </div>
+      <div class="overflow-y-auto flex-1 max-h-[400px]">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Player</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Games</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            {{#each players}}
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{addOne @index}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <a href="/players/{{slug}}" class="text-sm font-medium text-blue-600 hover:text-blue-800">{{name}}</a>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm {{current_rating}}">{{current_rating}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{games_played}}</td>
+            </tr>
+            {{else}}
+            <tr>
+              <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No top players yet</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {{/if}}
+
+    {{#if settings.showRecentGames}}
+    <div class="bg-white shadow rounded-lg flex flex-col">
+      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Recent Games</h3>
+      </div>
+
+      <div class="divide-y divide-gray-200 overflow-y-auto flex-1 max-h-[400px]">
+        {{#each recentGames}}
+        <div class="px-6 py-4">
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <div class="flex items-center space-x-2">
+                <a href="/players/{{white_player.slug}}" class="text-sm font-medium text-gray-900 hover:text-blue-600">{{white_player.name}}</a>
+                <span class="text-xs text-gray-500">({{white_rating_before}})</span>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">vs</div>
+              <div class="flex items-center space-x-2">
+                <a href="/players/{{black_player.slug}}" class="text-sm font-medium text-gray-900 hover:text-blue-600">{{black_player.name}}</a>
+                <span class="text-xs text-gray-500">({{black_rating_before}})</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-semibold">
+                {{#if (eq result 'white_win')}}<span class="text-green-600">1–0</span>
+                {{else if (eq result 'black_win')}}<span class="text-green-600">0–1</span>
+                {{else}}<span class="text-gray-600">½–½</span>{{/if}}
+              </div>
+              <div class="text-xs text-gray-500 mt-1">{{formatDate played_at}}</div>
+            </div>
+          </div>
+        </div>
+        {{else}}
+        <div class="px-6 py-4 text-center text-sm text-gray-500">No games recorded yet</div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+ <div class="bg-white shadow rounded-lg flex flex-col overflow-hidden mt-12">
+  <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
+    <h3 class="text-lg leading-6 font-medium text-gray-900 font-semibold">All Members</h3>
+    <input
+      type="text"
+      id="memberSearch"
+      placeholder="Search members..."
+      class="border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+    >
+  </div>
+
+  {{#if allPlayers}}
+  <div class="overflow-y-auto max-h-[400px]">
+    <table class="min-w-full divide-y divide-gray-200 table-auto">
+      <thead class="bg-gray-50 sticky top-0 z-10">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Player</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peak</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Record</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Games</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          {{#if user}}
+            {{#if (eq user.role 'admin')}}
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            {{/if}}
+          {{/if}}
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {{#each allPlayers}}
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{addOne @index}}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <a href="/players/{{slug}}" class="text-sm font-medium text-blue-600 hover:text-blue-800">{{name}}</a>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="text-sm {{current_rating}}">{{current_rating}}</span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{peak_rating}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <span class="text-green-600">{{wins}}W</span> -
+            <span class="text-red-600">{{losses}}L</span> -
+            <span class="text-gray-600">{{draws}}D</span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{games_played}}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            {{#if active}}
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+            {{else}}
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Inactive</span>
+            {{/if}}
+          </td>
+          {{#if ../user}}
+            {{#if (eq ../user.role 'admin')}}
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <a href="/players/{{slug}}/edit" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+              <a href="/players/{{slug}}" class="text-gray-600 hover:text-gray-900">View</a>
+            </td>
+            {{/if}}
+          {{/if}}
+
+        </tr>
+        {{else}}
+        <tr>
+          <td colspan="8" class="px-6 py-12 text-center">
+            <div class="text-gray-400">
+              <svg class="mx-auto h-12 w-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <p class="mt-2 text-sm text-gray-500">No players found</p>
+              <a href="/players/new" class="mt-2 inline-block text-blue-600 hover:text-blue-800">Add your first player</a>
+            </div>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{/if}}
+  
+</div>
+
+<div class="bg-white shadow rounded-lg flex flex-col overflow-hidden mt-12">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <div>
+        <h3 class="text-lg leading-6 font-medium text-gray-900 font-semibold">All Games</h3>
+      </div>
+    </div>
+  {{#if games}}
+  <div class="overflow-y-auto max-h-[500px]">
+    <table class="min-w-full divide-y divide-gray-200 table-auto">
+      <thead class="bg-gray-50 sticky top-0 z-10">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">White</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Black</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Result</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating Changes</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {{#each games}}
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{formatDateTime played_at}}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <a href="/players/{{white_player.slug}}" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+              {{white_player.name}}
+            </a>
+            <div class="text-xs text-gray-500">{{white_rating_before}} → {{white_rating_after}}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <a href="/players/{{black_player.slug}}" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+              {{black_player.name}}
+            </a>
+            <div class="text-xs text-gray-500">{{black_rating_before}} → {{black_rating_after}}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            {{#if (eq result 'white_win')}}
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold">1-0</span>
+            {{else if (eq result 'black_win')}}
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold">0-1</span>
+            {{else}}
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold">½-½</span>
+            {{/if}}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <div class="flex space-x-4">
+              <span class="{{#if (positiveChange white_rating_change)}}text-green-600{{else}}text-red-600{{/if}} font-semibold">
+                {{#if (positiveChange white_rating_change)}}+{{/if}}{{white_rating_change}}
+              </span>
+              <span class="text-gray-400">/</span>
+              <span class="{{#if (positiveChange black_rating_change)}}text-green-600{{else}}text-red-600{{/if}} font-semibold">
+                {{#if (positiveChange black_rating_change)}}+{{/if}}{{black_rating_change}}
+              </span>
+            </div>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{else}}
+  <div class="px-6 py-12 text-center">
+    <div class="text-gray-400">
+      <svg class="mx-auto h-12 w-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      </svg>
+      <p class="mt-2 text-sm text-gray-500">No games recorded yet</p>
+    </div>
+  </div>
+  {{/if}}
+</div>
+
+
+</div>
+
+<script>
+
+const quotes = [
+  { quote: "When you see a good move, look for a better one.", author: "Emanuel Lasker" },
+  { quote: "Tactics is knowing what to do when there is something to do; strategy is knowing what to do when there is nothing to do.", author: "Savielly Tartakower" },
+  { quote: "I don't believe in psychology. I believe in good moves.", author: "Bobby Fischer" },
+  { quote: "The pawns are the soul of chess.", author: "François-André Danican Philidor" },
+  { quote: "You may learn much more from a game you lose than from a game you win. You will have to lose hundreds of games before becoming a good player.", author: "José Raúl Capablanca" },
+  { quote: "Play the opening like a book, the middlegame like a magician, and the endgame like a machine.", author: "Rudolf Spielmann" },
+  { quote: "The blunders are all there on the board, waiting to be made.", author: "Savielly Tartakower" },
+  { quote: "The threat is stronger than the execution.", author: "Aaron Nimzowitsch" },
+  { quote: "Chess is the struggle against the error.", author: "Johannes Zukertort" },
+  { quote: "Even a poor plan is better than no plan at all.", author: "Mikhail Chigorin" },
+  { quote: "Chess is life in miniature. Chess is struggle, chess is battles.", author: "Garry Kasparov" },
+  { quote: "In life, as in chess, forethought wins.", author: "Charles Buxton" },
+  { quote: "A sacrifice is best refuted by accepting it.", author: "Wilhelm Steinitz" },
+  { quote: "You have to have the fighting spirit. You have to force moves and take chances.", author: "Bobby Fischer" },
+  { quote: "Chess is imagination, art, science, and sport.", author: "Anatoly Karpov" },
+  { quote: "The beauty of a move lies not in its appearance but in the thought behind it.", author: "Aron Nimzowitsch" },
+  { quote: "To avoid losing a piece, many a player has lost the game.", author: "Savielly Tartakower" },
+  { quote: "One doesn't have to play well, it's enough to play better than your opponent.", author: "Siegbert Tarrasch" },
+  { quote: "If you wish to succeed, you must brave the risk of failure.", author: "Garry Kasparov" },
+  { quote: "It is not a move, even the best move, that you must seek, but a realizable plan.", author: "Eugene Znosko-Borovsky" },
+  { quote: "The hardest game to win is a won game.", author: "Emanuel Lasker" },
+  { quote: "Chess is a war over the board. The object is to crush the opponent's mind.", author: "Bobby Fischer" },
+  { quote: "To play for a draw, at any rate with white, is to some degree a crime against chess.", author: "Mikhail Tal" },
+  { quote: "A good player is always lucky.", author: "José Raúl Capablanca" },
+  { quote: "Some part of a mistake is always correct.", author: "Savielly Tartakower" }
+];
+
+function displayRandomQuote() {
+  const quoteDisplay = document.getElementById('random-quote-display');
+  if (quoteDisplay) {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    const randomQuote = quotes[randomIndex];
+    quoteDisplay.innerHTML = `"${randomQuote.quote}" - ${randomQuote.author}`;
+  }
+}
+
+// main
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('memberSearch');
+  const playerTable = searchInput?.closest('.bg-white')?.querySelector('tbody');
+  const tableRows = playerTable ? [...playerTable.querySelectorAll('tr')] : [];
+
+  displayRandomQuote();
+
+  if (!searchInput || !playerTable) return;
+
+  const noResultsRow = document.createElement('tr');
+  noResultsRow.innerHTML = `
+    <td colspan="100%" class="text-center text-gray-500 py-4 italic">No results found</td>
+  `;
+  noResultsRow.style.display = 'none';
+  playerTable.appendChild(noResultsRow);
+
+  searchInput.addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    let visibleCount = 0;
+
+    tableRows.forEach(row => {
+      const playerNameCell = row.querySelector('td:nth-child(2)');
+      if (!playerNameCell) return;
+
+      const playerName = playerNameCell.textContent.toLowerCase();
+      const match = playerName.includes(query);
+      row.style.display = match ? '' : 'none';
+      if (match) visibleCount++;
+    });
+
+    noResultsRow.style.display = visibleCount === 0 ? '' : 'none';
+  });
+});
+
+</script>

@@ -1,0 +1,59 @@
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
+  <h1 class="text-2xl font-bold mb-6">Admin Settings</h1>
+
+  <form action="/settings" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <div>
+      <label class="block text-gray-700 font-medium mb-2">Club Name:</label>
+      <input type="text" name="clubName" value="{{settings.clubName}}" 
+             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <div class="flex items-center">
+      <input type="checkbox" name="showTopPlayers" id="showTopPlayers" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+             {{#if settings.showTopPlayers}}checked{{/if}}>
+      <label for="showTopPlayers" class="ml-2 text-gray-700 font-medium">Show Top Players</label>
+    </div>
+
+    <div class="flex items-center">
+      <input type="checkbox" name="showRecentGames" id="showRecentGames" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+             {{#if settings.showRecentGames}}checked{{/if}}>
+      <label for="showRecentGames" class="ml-2 text-gray-700 font-medium">Show Most Recent Games</label>
+    </div>
+
+    {{!-- <div>
+      <label class="block text-gray-700 font-medium mb-2">Logo Upload:</label>
+      <input type="file" name="logo" accept="image/*"
+             class="block w-full text-gray-700 border border-gray-300 rounded-md px-3 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
+      {{#if settings.logo.data}}
+        <img src="data:{{settings.logo.contentType}};base64,{{settings.logo.data}}" 
+             alt="Logo Preview" class="mt-4 h-24 border rounded-md shadow-sm">
+      {{/if}}
+    </div> --}}
+
+    <div>
+      <button type="submit" 
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md shadow-sm transition-colors">
+        Update Settings
+      </button>
+    </div>
+  </form>
+
+  <div class="mt-10">
+    <h2 class="text-xl font-semibold mb-4">Invite Users</h2>
+    <form action="/settings/invite" method="POST" class="flex space-x-4">
+      <input type="email" name="inviteEmail" placeholder="Enter email to invite" required
+             class="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition-colors">
+        Invite
+      </button>
+    </form>
+
+    {{#if settings.invitedEmails.length}}
+      <ul class="mt-4 list-disc list-inside text-gray-700">
+        {{#each settings.invitedEmails}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  </div>
+</div>
