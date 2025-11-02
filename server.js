@@ -35,6 +35,8 @@ app.engine('handlebars', engine({
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
+app.set('trust proxy', 1);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -56,7 +58,6 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 * 7
   }
 }));
-
 
 app.use(setUser);
 
