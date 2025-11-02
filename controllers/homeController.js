@@ -23,6 +23,7 @@ exports.getHome = async (req, res) => {
 
       Settings.findOne().lean(),
 
+      // 10 most recent games to be displayed
       Game.find()
         .populate('white_player', 'name slug')
         .populate('black_player', 'name slug')
@@ -30,8 +31,8 @@ exports.getHome = async (req, res) => {
         .limit(10)
         .lean(),
 
-      //This will eventually get rather large.
-      //todo: optimize
+      // All games. This will eventually get rather large.
+      // todo: optimize
       Game.find()
         .populate('white_player', 'name slug')
         .populate('black_player', 'name slug')

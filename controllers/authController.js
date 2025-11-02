@@ -35,29 +35,3 @@ exports.logout = (req, res) => {
     res.redirect('/auth/login');
   });
 };
-
-exports.signupForm = (req, res) => {
-  res.render('signup', { title: 'Sign Up' });
-};
-
-exports.signup = async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    const existing = await User.findOne({ email });
-    if (existing) return res.render('signup', { error: 'Email already in use' });
-
-    const user = await User.create({ name, email, password, role: 'admin' });
-
-    req.session.user = {
-      _id: user._id,
-      name: user.name,
-      role: user.role
-    };
-
-    res.redirect('/');
-  } 
-  catch (err) {
-    console.error(err);
-    res.status(500).send('Internal Server Error');
-  }
-};

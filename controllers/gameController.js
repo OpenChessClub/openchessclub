@@ -3,14 +3,6 @@ const Game = require('../models/Game');
 const { calculateGameRatings } = require('../lib/elo');
 const getSettings = require('../lib/getSettings');
 
-exports.listGames = async (req, res) => {
-  const games = await Game.find()
-    .populate('white_player', 'name slug')
-    .populate('black_player', 'name slug')
-    .sort({ played_at: -1 }).lean();
-  res.render('games', { title: 'All Games', games });
-};
-
 exports.newGameForm = async (req, res) => {
   const players = await Player.find({ active: true }).sort({ name: 1 }).lean();
   const settings = await getSettings();

@@ -2,42 +2,6 @@ const Player = require('../models/Player');
 const Game = require('../models/Game');
 const getSettings = require('../lib/getSettings');
 
-exports.listPlayers = async (req, res) => {
-  const m = 10;
-  const prior = 1200;
-
-  const players = await Player.aggregate([
-    { $addFields: {
-        games_played_num: { $ifNull: ["$games_played", 0] }
-      }
-    },
-
-    { $addFields: {
-        adjusted_rating: {
-          $add: [
-            { $multiply: [
-                { $divide: ["$games_played_num", { $add: ["$games_played_num", m] }] },
-                { $ifNull: ["$current_rating", prior] }
-              ]
-            },
-            { $multiply: [
-                { $divide: [m, { $add: ["$games_played_num", m] }] },
-                prior
-              ]
-            }
-          ]
-        }
-      }
-    },
-
-    { $sort: { adjusted_rating: -1, games_played_num: -1, current_rating: -1 } },
-    { $project: { games_played_num: 0 } }
-  ]).exec();
-
-  res.render('players', { title: 'All Players', players });
-};
-
-
 exports.newPlayerForm = (req, res) => {
   res.render('player-form', { title: 'Add New Player', action: '/players', player: {} });
 };
