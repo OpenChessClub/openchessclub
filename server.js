@@ -29,6 +29,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.engine('handlebars', engine({
   defaultLayout: 'main',
   layoutsDir: path.join(__dirname, 'views', 'layouts'),
+  partialsDir: path.join(__dirname, 'views', 'partials'),
   helpers: handleBarsHelpers
 }));
 
