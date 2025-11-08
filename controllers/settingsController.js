@@ -36,6 +36,8 @@ exports.updateSettings = async (req, res) => {
       settings.clubName = req.body.clubName || settings.clubName;
       settings.showTopPlayers = !!req.body.showTopPlayers;
       settings.showRecentGames = !!req.body.showRecentGames;
+      settings.announcement = req.body.announcement;
+      settings.showAnnouncement= !!req.body.showAnnouncement;
 
       if (req.file) {
         settings.logo.data = req.file.buffer.toString('base64');
@@ -44,7 +46,8 @@ exports.updateSettings = async (req, res) => {
 
       await settings.save();
       res.redirect('/settings');
-    } catch (e) {
+    } 
+    catch (e) {
       console.error(e);
       res.status(500).send('Error updating settings');
     }
