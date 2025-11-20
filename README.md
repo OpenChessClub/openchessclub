@@ -4,6 +4,10 @@
 
 ---
 
+## Deploy OpenChessClub Instantly
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
 ## Features
 
 - Manage players with profiles and stats  
