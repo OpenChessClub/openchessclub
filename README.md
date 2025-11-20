@@ -2,11 +2,11 @@
 
 **OpenChessClub** is an open-source chess club management platform built with Node.js, Express, MongoDB, and Handlebars. It helps local and online chess clubs manage players, track games, and organize events.
 
----
-
 ## Deploy OpenChessClub Instantly
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+---
 
 ## Features
 
@@ -16,16 +16,6 @@
 - Search and filter players dynamically  
 - Simple admin interface for managing users and clubs  
 
----
-
-## Tech Stack
-
-- **Backend:** Node.js, Express  
-- **Database:** MongoDB with Mongoose  
-- **Frontend:** Handlebars, Tailwind CSS, Vanilla JavaScript  
-- **Session Management:** express-session  
-
----
 
 ## Installation
 
@@ -35,8 +25,6 @@
 git clone https://github.com/openchessclub/openchessclub.git
 cd openchessclub
 ```
-
----
 
 ### 2. Install the dependencies
 
@@ -50,7 +38,7 @@ At the root of this project, you'll find `.env.example`. Rename it to `.env`, an
 
 ## MongoDB setup
 
-If you don’t already have a MongoDB connection string, you can create a free cluster with MongoDB Atlas.
+If you don’t already have a MongoDB connection string, you can create a free cluster with MongoDB Atlas. If you choose to quick deploy with the above button, MongoDB will be automatically configured for you, although that does come with a $10/month price. 
 
 1. Go to https://www.mongodb.com/cloud/atlas 
 2. Create a free account and a new project
